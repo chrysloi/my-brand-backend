@@ -3,7 +3,7 @@ import { NextFunction } from "express";
 export default (cb: any) => async (req: any, res: any, next: NextFunction) => {
   try {
     await cb(req, res, next);
-  } catch (error) {
+  } catch (error: Error | any) {
     console.log(error);
     return res.status(500).json({
       error: true,
