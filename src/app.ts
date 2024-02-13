@@ -9,7 +9,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", (req: Request, res: Response) => {
+app.get("/", (_, res: Response) => {
   res.send("Welcome to my server");
 });
 
