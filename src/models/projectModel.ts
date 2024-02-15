@@ -41,6 +41,6 @@ const projectSchema = new Schema(
   { timestamps: true }
 );
 
-type Project = InferSchemaType<typeof projectSchema>;
+export type Project = InferSchemaType<typeof projectSchema>;
 
 export const project = model<Project>("Project", projectSchema);
