@@ -1,0 +1,35 @@
+openapi: 3.1.0
+info:
+  title: Redocly Museum API
+  description: An imaginary, but delightful Museum API for interacting with museum services and information. Built with love by Redocly.
+  version: 1.0.0
+  contact:
+    email: eloi.chrysanthe@gmail.com
+    # url: "https://redocly.com/docs/cli/"
+servers:
+  - url: 127.0.0.1:20242/api
+components:
+  securitySchemes:
+    JWT:
+      description: JWT bearer token description...
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+  - name: Ping
+    description: Contains an api to ping to the server
+  - name: Blog
+    description: These're the apis that will be used with the blog section
+  - name: Project
+    description: apis that will be used on the parts of projects
+paths:
+  /ping:
+    get:
+      summary: Ping the serve
+      description: This is an api to ping the app server.
+      operationId: pinServer
+      # x-hideTryItPanel: false
+      tags:
+        - Ping
+security:
+  - JWT: []
