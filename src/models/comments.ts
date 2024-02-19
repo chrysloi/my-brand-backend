@@ -19,7 +19,7 @@ const CommentSchema = new Schema(
     is_hide: {
       type: Boolean,
       required: true,
-      default: true,
+      default: false,
     },
     is_anonymous: {
       type: Boolean,
@@ -32,4 +32,4 @@ const CommentSchema = new Schema(
 
 type Comment = InferSchemaType<typeof CommentSchema>;
 
-export const CommentModel = model<Comment>("User", CommentSchema);
+export const CommentModel = model<Comment>("Comment", CommentSchema);

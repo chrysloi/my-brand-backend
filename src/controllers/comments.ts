@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { CommentModel } from "../models/comments";
 import { article } from "../models/articleModel";
-import { CREATED, OK, NOT_FOUND, BAD_REQUEST } from "http-status";
+import { CREATED, OK, NOT_FOUND, BAD_REQUEST, FORBIDDEN } from "http-status";
+import { AuthRequest } from "../types";
 
 class Controller {
   async comment(req: Request, res: Response) {
@@ -60,11 +61,14 @@ class Controller {
       is_hide: false,
     });
 
-    return res.status(OK).json({ message: "Commented successfully", comments });
+    return res
+      .status(OK)
+      .json({ message: "Comments fetched successfully", comments });
   }
 
-  async deleteArticleComments(req: Request, res: Response) {
-    const { articleId } = req.params;
+  async deleteArticleComments(req: AuthRequest, res: Response) {
+    const { articleId, commentId } = req.params;
+    const { userId } = req.user;
     const articleExists = await article.findById(articleId);
 
     if (!articleExists) {
@@ -73,12 +77,13 @@ class Controller {
         .json({ message: "Article doesn't exists" });
     }
 
-    const comments = await CommentModel.find({
-      article: articleId,
-      is_hide: false,
-    });
+    if (articleExists.author.toString() !== userId) {
+      return res.status(FORBIDDEN).json({ message: "Permission denied" });
+    }
 
-    return res.status(OK).json({ message: "Commented successfully", comments });
+    await CommentModel.findByIdAndUpdate(commentId, { is_hide: true });
+
+    return res.status(OK).json({ message: "Commented deleted successfully" });
   }
 
   async deleteComment(req: Request, res: Response) {
