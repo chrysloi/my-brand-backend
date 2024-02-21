@@ -1,18 +1,21 @@
 import { Request, Response } from "express";
 import { article } from "../models/articleModel";
 import { CREATED, OK, NOT_FOUND } from "http-status";
+import { JsonResponse } from "../util/jsonResponse";
 
 interface AuthRequest extends Request {
   user: any;
 }
 class Controller {
-  async createArticle(req: any, res: Response) {
+  async createArticle(req: AuthRequest, res: Response) {
     const { userId } = req.user;
     const newArticle = await article.create({ ...req.body, author: userId });
 
-    return res
-      .status(CREATED)
-      .json({ newArticle, message: "Article created successfully" });
+    return JsonResponse(res, {
+      status: CREATED,
+      newArticle,
+      message: "Article created successfully",
+    });
   }
 
   async getUserAllArticles(req: AuthRequest, res: Response) {
@@ -28,35 +31,40 @@ class Controller {
     const articles = await article.find(conditions);
 
     if (articles.length === 0) {
-      return res
-        .status(NOT_FOUND)
-        .json({ articles, message: "There're no articles currently" });
+      return JsonResponse(res, {
+        status: NOT_FOUND,
+        message: "There're no articles currently",
+      });
     }
 
-    return res
-      .status(OK)
-      .json({ articles, message: "Articles fetched successfully" });
+    return JsonResponse(res, {
+      status: NOT_FOUND,
+      message: "There're no articles currently",
+    });
   }
 
-  async getAllArticles(req: any, res: Response) {
+  async getAllArticles(req: AuthRequest, res: Response) {
     const articles = await article.find({ is_published: true });
 
-    return res
-      .status(OK)
-      .json({ articles, message: "Articles fetched successfully" });
+    return JsonResponse(res, {
+      status: OK,
+      articles,
+      message: "Articles fetched successfully",
+    });
   }
 
   async getOneArticle(req: Request, res: Response) {
     const { id } = req.params;
     const fetchedArticle = await article.findById(id);
 
-    return res.status(OK).json({
+    return JsonResponse(res, {
+      status: OK,
       article: fetchedArticle,
       message: "Article fetched successfully",
     });
   }
 
-  async updateArticle(req: any, res: Response) {
+  async updateArticle(req: AuthRequest, res: Response) {
     const { userId } = req.user;
     const { id } = req.params;
     await article.findOneAndUpdate(
@@ -64,12 +72,13 @@ class Controller {
       { ...req.body }
     );
 
-    return res
-      .status(CREATED)
-      .json({ message: "Article updated successfully" });
+    return JsonResponse(res, {
+      status: OK,
+      message: "Article updated successfully",
+    });
   }
 
-  async publishArticle(req: any, res: Response) {
+  async publishArticle(req: AuthRequest, res: Response) {
     const { userId } = req.user;
     const { id } = req.params;
     await article.findOneAndUpdate(
@@ -77,12 +86,13 @@ class Controller {
       { is_published: true }
     );
 
-    return res
-      .status(CREATED)
-      .json({ message: "Article published successfully" });
+    return JsonResponse(res, {
+      status: OK,
+      message: "Article Published successfully",
+    });
   }
 
-  async unPublishArticle(req: any, res: Response) {
+  async unPublishArticle(req: AuthRequest, res: Response) {
     const { userId } = req.user;
     const { id } = req.params;
     await article.findOneAndUpdate(
@@ -90,12 +100,13 @@ class Controller {
       { is_published: false }
     );
 
-    return res
-      .status(CREATED)
-      .json({ message: "Article unpublished successfully" });
+    return JsonResponse(res, {
+      status: OK,
+      message: "Article unpublished successfully",
+    });
   }
 
-  async deleteArticle(req: any, res: Response) {
+  async deleteArticle(req: AuthRequest, res: Response) {
     const { userId } = req.user;
     const { id } = req.params;
     await article.findOneAndDelete({
@@ -104,9 +115,10 @@ class Controller {
       is_published: false,
     });
 
-    return res
-      .status(CREATED)
-      .json({ message: "Article deleted successfully" });
+    return JsonResponse(res, {
+      status: OK,
+      message: "Article Delete successfully",
+    });
   }
 }
 
