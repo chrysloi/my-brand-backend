@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { user } from "../models/userModel";
 import env from "../util/envValidate";
+import { JsonResponse } from "../util/jsonResponse";
 
 class Controller {
   async register(req: Request, res: Response) {
@@ -19,14 +20,18 @@ class Controller {
         role: "admin",
         is_verified: true,
       });
-      return res
-        .status(CREATED)
-        .json({ message: "Admin created Successfully" });
+      return JsonResponse(res, {
+        status: CREATED,
+        message: "Admin created Successfully",
+      });
     }
     const userExisted = await user.findOne({ email });
 
     if (userExisted)
-      return res.status(BAD_REQUEST).json({ message: "email already taken" });
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        message: "email already taken",
+      });
 
     await user.create({
       name,
@@ -36,7 +41,10 @@ class Controller {
       is_verified: true,
     });
 
-    return res.status(CREATED).json({ message: "User created Successfully" });
+    return JsonResponse(res, {
+      status: CREATED,
+      message: "User created Successfully",
+    });
   }
 
   async login(req: Request, res: Response) {
@@ -44,21 +52,32 @@ class Controller {
 
     const userExists = await user.findOne({ email });
     if (!userExists)
-      return res.status(UNAUTHORIZED).json({ message: "User doesn't exists" });
+      return JsonResponse(res, {
+        status: UNAUTHORIZED,
+        message: "User doesn't exists",
+      });
 
     const valid_pass = await bcrypt.compare(password, userExists.password);
     if (!valid_pass)
-      return res
-        .status(UNAUTHORIZED)
-        .json({ message: "Password doesn't match" });
+      return JsonResponse(res, {
+        status: UNAUTHORIZED,
+        message: "Password doesn't match",
+      });
 
-    const token = jwt.sign({ userId: userExists.id }, env.JWT_SECRET, {
-      expiresIn: "7d",
+    const token = jwt.sign(
+      { userId: userExists.id, role: userExists.role },
+      env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    return JsonResponse(res, {
+      status: OK,
+      message: "Successfully logged in",
+      user: userExists,
+      token,
     });
-
-    return res
-      .status(OK)
-      .json({ user: userExists, token, message: "Successfulll logged in" });
   }
 }
 
