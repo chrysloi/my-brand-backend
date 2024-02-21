@@ -1,13 +1,15 @@
 import { Router } from "express";
 import asyncHandler from "../middleware/asyncHandler";
 import { articleController } from "../controllers/articles";
-import { isAuthenticated, isAdmin } from "../middleware/auth";
+import { Authorization } from "../middleware/auth";
+import { ArticleMiddleware } from "../middleware/articleValidation";
 
 const route = Router();
 
 route.post(
   "/create",
-  asyncHandler(isAuthenticated),
+  asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(ArticleMiddleware.createArticle),
   asyncHandler(articleController.createArticle)
 );
 
@@ -15,33 +17,37 @@ route.post("/one/:id", asyncHandler(articleController.getOneArticle));
 
 route.post("/all", asyncHandler(articleController.getAllArticles));
 
-route.post(
+route.get(
   "/user/all",
-  asyncHandler(isAuthenticated),
+  asyncHandler(Authorization.isAuthenticated),
   asyncHandler(articleController.getUserAllArticles)
 );
 
 route.patch(
   "/one/:id/update",
-  asyncHandler(isAuthenticated),
+  asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(ArticleMiddleware.updateArticle),
   asyncHandler(articleController.updateArticle)
 );
 
 route.patch(
   "/one/:id/publish",
-  asyncHandler(isAuthenticated),
+  asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(ArticleMiddleware.emptyBody),
   asyncHandler(articleController.publishArticle)
 );
 
 route.patch(
   "/one/:id/unpublish",
-  asyncHandler(isAuthenticated),
+  asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(ArticleMiddleware.emptyBody),
   asyncHandler(articleController.unPublishArticle)
 );
 
 route.delete(
   "/one/:id/delete",
-  asyncHandler(isAuthenticated),
+  asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(ArticleMiddleware.emptyBody),
   asyncHandler(articleController.publishArticle)
 );
 
