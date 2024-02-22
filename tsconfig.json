@@ -1,17 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
+    "target": "ES2022",
+    "module": "Node16",
     "outDir": "./dist",
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
-    "lib": ["es2018", "esnext.asynciterable"],
+    "lib": ["ES2023", "ES2022", "esnext.asynciterable"],
     "declaration": true,
     "declarationDir": "dist/types",
     "allowJs": true,
     "noImplicitAny": false
   },
-  "exclude": ["node_modules", "**/types/*", "dist/**"],
+  "exclude": [
+    "node_modules",
+    "**/types/*",
+    "dist/**",
+    "*.config.js",
+    "coverage",
+    "__test__/*",
+    "*.test.ts"
+  ],
   "include": ["./src/*", "src/types", "**/*.js"]
 }

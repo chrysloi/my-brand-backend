@@ -3,6 +3,8 @@ import express, { Express, Request, Response } from "express";
 import morgan from "morgan";
 import routes from "./routes";
 import path from "path";
+import { JsonResponse } from "./util/jsonResponse";
+import { NOT_FOUND, OK } from "http-status";
 
 const app: Express = express();
 
@@ -11,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (_, res: Response) => {
-  res.status(200).json({ message: "Welcome to my server" });
+  return JsonResponse(res, { status: OK, message: "Welcome to my server" });
 });
 
 app.get("/api-docs", (_, res: Response) => {
@@ -21,7 +23,7 @@ app.get("/api-docs", (_, res: Response) => {
 app.use("/api", routes);
 
 app.use("/**", (req: Request, res: Response) => {
-  res.status(404).json({ message: "Route not found" });
+  return JsonResponse(res, { status: NOT_FOUND, error: "Route not found" });
 });
 
 app.use((error: unknown, req: Request, res: Response) => {
