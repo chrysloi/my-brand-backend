@@ -7,7 +7,7 @@ info:
     email: eloi.chrysanthe@gmail.com
     # url: "https://redocly.com/docs/cli/"
 servers:
-  - url: 127.0.0.1:20242/api
+  - url: http://127.0.0.1:20242/api
 components:
   securitySchemes:
     JWT:
@@ -18,6 +18,8 @@ components:
 tags:
   - name: Ping
     description: Contains an api to ping to the server
+  - name: Authentication
+    description: These're the apis that will be used while authentication a user
   - name: Blog
     description: These're the apis that will be used with the blog section
   - name: Project
@@ -28,8 +30,1387 @@ paths:
       summary: Ping the serve
       description: This is an api to ping the app server.
       operationId: pinServer
-      # x-hideTryItPanel: false
       tags:
         - Ping
+      responses:
+        "200":
+          description: "Testing the server workability"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Welcome to my server"
+        "404":
+          description: "When the called route doesn't exists in the codes"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Route not found"
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register user
+      description: Once the user doesn't have an account they'll register
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email of the user.
+                  example: test@example.com
+                name:
+                  type: string
+                  description: Names of the user.
+                  example: John Doe
+                password:
+                  type: string
+                  format: password
+                  description: Password of the user.
+                  example: password
+      responses:
+        "201":
+          description: "Register user successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User created Successfully
+                  status:
+                    type: number
+                    example: 201
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: email already taken
+                  status:
+                    type: number
+                    example: 400
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Once the user have an account they'll login
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email of the user.
+                  example: test@example.com
+                password:
+                  type: string
+                  format: password
+                  description: Password of the user.
+                  example: password
+      responses:
+        "200":
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully logged in
+                  status:
+                    type: number
+                    example: 200
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.joB6I1tl8ca3lmjcyu8PRB6UVlWEydcG
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        ['"password" length must be at least 6 characters long']
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: User doesn't exists
+  /blog/create:
+    post:
+      tags:
+        - Blog
+      summary: Create a blog
+      # description: Once the user have an account they'll login
+      operationId: createBlog
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the article
+                  example: How to set up a react project
+                summary:
+                  type: string
+                  description: summary of the article.
+                  example: A short summary
+                detailed:
+                  type: string
+                  description: detailed article.
+                  example: Detailed content of my article
+      responses:
+        "201":
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article created successfully
+                  status:
+                    type: number
+                    example: 201
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /blog/one/{id}/update:
+    post:
+      tags:
+        - Blog
+      summary: Update a blog
+      # description: Once the user have an account they'll login
+      operationId: updateBlog
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the article
+                  example: How to set up a react project
+                summary:
+                  type: string
+                  description: summary of the article.
+                  example: A short summary
+                detailed:
+                  type: string
+                  description: detailed article.
+                  example: Detailed content of my article
+      responses:
+        "200":
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article udpated successfully
+                  status:
+                    type: number
+                    example: 200
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /blog/one/{id}/publish:
+    patch:
+      tags:
+        - Blog
+      summary: Publish a blog
+      # description: Once the user have an account they'll login
+      operationId: publishBlog
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article Published successfully
+                  status:
+                    type: number
+                    example: 200
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /blog/one/{id}/unpublish:
+    patch:
+      tags:
+        - Blog
+      summary: Publish a blog
+      # description: Once the user have an account they'll login
+      operationId: unpublishBlog
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article Published successfully
+                  status:
+                    type: number
+                    example: 200
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /blog/all:
+    get:
+      tags:
+        - Blog
+      summary: Get all articles
+      # description: Once the user have an account they'll login
+      operationId: getAllArticles
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article Published successfully
+                  status:
+                    type: number
+                    example: 200
+                  articles:
+                    type: array
+                    items:
+                      type: object
+                      example:
+                        _id: 65cba78d4fa3016f8b3ef1ce
+                        title: How to set up a react project
+                        summary: A short summary
+                        detailed: Detailed content of my article
+                        author: 65cba70c4fa3016f8b3ef1c3
+                        is_deleted: false
+                        is_published: true
+                        publishedAt: 2024-02-13T17:02:56.456Z
+                        createdAt: 2024-02-13T17:31:57.043Z
+                        updatedAt: 2024-02-16T15:01:43.346Z
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+        "404":
+          description: Don't have any article at the moment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 404
+                  message:
+                    type: string
+                    example: "There're no articles currently"
+  /blog/user/all:
+    get:
+      tags:
+        - Blog
+      summary: Get user's all articles
+      # description: Once the user have an account they'll login
+      operationId: getUserAllArticles
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Articles fetched successfully
+                  status:
+                    type: number
+                    example: 200
+                  articles:
+                    type: array
+                    items:
+                      type: object
+                      example:
+                        _id: 65cba78d4fa3016f8b3ef1ce
+                        title: How to set up a react project
+                        summary: A short summary
+                        detailed: Detailed content of my article
+                        author: 65cba70c4fa3016f8b3ef1c3
+                        is_deleted: false
+                        is_published: true
+                        publishedAt: 2024-02-13T17:02:56.456Z
+                        createdAt: 2024-02-13T17:31:57.043Z
+                        updatedAt: 2024-02-16T15:01:43.346Z
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+        "404":
+          description: Don't have any article at the moment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 404
+                  message:
+                    type: string
+                    example: "There're no articles currently"
+  /blog/one/{id}:
+    post:
+      tags:
+        - Blog
+      summary: Get a blog
+      # description: Once the user have an account they'll login
+      operationId: getOneBlog
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article Published successfully
+                  # status:
+                  #   type: number
+                  #   example: 200
+                  article:
+                    type: object
+                    example:
+                      _id: "65cba78d4fa3016f8b3ef1ce"
+                      title: "How to set up a react project"
+                      summary: "A short summary"
+                      detailed: "Detailed content of my article"
+                      author: "65cba70c4fa3016f8b3ef1c3"
+                      is_deleted: false
+                      is_published: true
+                      publishedAt: "2024-02-13T17:02:56.456Z"
+                      createdAt: "2024-02-13T17:31:57.043Z"
+                      updatedAt: "2024-02-16T15:01:43.346Z"
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /blog/one/{id}/delete:
+    patch:
+      tags:
+        - Blog
+      summary: Delete a blog
+      # description: Once the user have an account they'll login
+      operationId: deleteBlog
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article Published successfully
+                  status:
+                    type: number
+                    example: 200
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /project/create:
+    post:
+      tags:
+        - Project
+      summary: Create a Project
+      # description: Once the user have an account they'll login
+      operationId: createProject
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the Project
+                  example: Africa wizzy safaris
+                summary:
+                  type: string
+                  description: summary of the Project.
+                  example: A short summary
+                detailed:
+                  type: string
+                  description: detailed Project description.
+                  example: Detailed content of my description
+      responses:
+        "201":
+          description: Create Project Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Project created successfully
+                  status:
+                    type: number
+                    example: 201
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /project/one/{id}/update:
+    post:
+      tags:
+        - Project
+      summary: Update a Project
+      # description: Once the user have an account they'll login
+      operationId: updateProject
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the Project
+                  example: Africa wizzy safaris
+                summary:
+                  type: string
+                  description: summary of the Project.
+                  example: A short summary
+                detailed:
+                  type: string
+                  description: detailed Project description.
+                  example: Detailed content of my description
+      responses:
+        "200":
+          description: Project successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Project udpated successfully
+                  status:
+                    type: number
+                    example: 200
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /project/one/{id}/publish:
+    patch:
+      tags:
+        - Project
+      summary: Publish a Project
+      # description: Once the user have an account they'll login
+      operationId: publishProject
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Project Published successfully
+                  status:
+                    type: number
+                    example: 200
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /project/one/{id}/unpublish:
+    patch:
+      tags:
+        - Project
+      summary: Publish a blog
+      # description: Once the user have an account they'll login
+      operationId: unpublishProject
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Project Published successfully
+                  status:
+                    type: number
+                    example: 200
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /project/all:
+    get:
+      tags:
+        - Project
+      summary: Get all projects
+      # description: Once the user have an account they'll login
+      operationId: getAllProjects
+      responses:
+        "200":
+          description: Successfully fetched all Projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Project fetched successfully
+                  status:
+                    type: number
+                    example: 200
+                  articles:
+                    type: array
+                    items:
+                      type: object
+                      example:
+                        _id: 65cba78d4fa3016f8b3ef1ce
+                        title: Africa Wizzy safaris
+                        summary: A short summary
+                        detailed: Detailed content of my project
+                        author: 65cba70c4fa3016f8b3ef1c3
+                        is_deleted: false
+                        is_published: true
+                        publishedAt: 2024-02-13T17:02:56.456Z
+                        createdAt: 2024-02-13T17:31:57.043Z
+                        updatedAt: 2024-02-16T15:01:43.346Z
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+        "404":
+          description: Don't have any article at the moment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 404
+                  message:
+                    type: string
+                    example: "There're no articles currently"
+  /project/user/all:
+    get:
+      tags:
+        - Project
+      summary: Get all projects
+      # description: Once the user have an account they'll login
+      operationId: getMyProjects
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+            example: published
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Articles fetched successfully
+                  status:
+                    type: number
+                    example: 200
+                  articles:
+                    type: array
+                    items:
+                      type: object
+                      example:
+                        _id: 65cba78d4fa3016f8b3ef1ce
+                        title: Africa Wizzy safaris
+                        summary: A short summary
+                        detailed: Detailed content of my project
+                        author: 65cba70c4fa3016f8b3ef1c3
+                        is_deleted: false
+                        is_published: true
+                        publishedAt: 2024-02-13T17:02:56.456Z
+                        createdAt: 2024-02-13T17:31:57.043Z
+                        updatedAt: 2024-02-16T15:01:43.346Z
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+        "404":
+          description: Don't have any article at the moment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 404
+                  message:
+                    type: string
+                    example: "There're no articles currently"
+  /project/one/{id}:
+    post:
+      tags:
+        - Project
+      summary: Get a project
+      # description: Once the user have an account they'll login
+      operationId: getOneProject
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article fetched successfully
+                  status:
+                    type: number
+                    example: 200
+                  article:
+                    type: object
+                    example:
+                      _id: 65cba78d4fa3016f8b3ef1ce
+                      title: Africa Wizzy safaris
+                      summary: A short summary
+                      detailed: Detailed content of my project
+                      author: 65cba70c4fa3016f8b3ef1c3
+                      is_deleted: false
+                      is_published: true
+                      publishedAt: 2024-02-13T17:02:56.456Z
+                      createdAt: 2024-02-13T17:31:57.043Z
+                      updatedAt: 2024-02-16T15:01:43.346Z
+        "400":
+          description: "Validation Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 400
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          '"detailed" length must be at least 15 characters long',
+                        ]
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
+  /project/one/{id}/delete:
+    patch:
+      tags:
+        - Project
+      summary: Delete a project
+      # description: Once the user have an account they'll login
+      operationId: deleteProject
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "65cbd47fcd78a22aaa14e812"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article deleted successfully
+                  status:
+                    type: number
+                    example: 200
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: "Unauthorized: Missing invalid token."
 security:
   - JWT: []

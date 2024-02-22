@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (_, res: Response) => {
-  res.send("Welcome to my server");
+  res.status(200).json({ message: "Welcome to my server" });
 });
 
 app.use("/api", routes);

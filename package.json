@@ -8,8 +8,8 @@
     "build": "rm -rf dist && tsc",
     "dev": "nodemon src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lintdoc": "npx @redocly/cli lint src/openapi.yaml",
-    "rundoc": "npx @redocly/cli preview-docs src/openapi.yaml"
+    "lint:doc": "npx @redocly/cli lint src/openapi.yaml",
+    "run:doc": "npx @redocly/cli preview-docs src/openapi.yaml"
   },
   "keywords": [
     "node",
