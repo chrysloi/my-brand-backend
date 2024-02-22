@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { Express, Request, Response } from "express";
 import morgan from "morgan";
 import routes from "./routes";
+import path from "path";
 
 const app: Express = express();
 
@@ -11,6 +12,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (_, res: Response) => {
   res.status(200).json({ message: "Welcome to my server" });
+});
+
+app.get("/api-docs", (_, res: Response) => {
+  res.sendFile(path.join(__dirname, "docs", "docs.html"));
 });
 
 app.use("/api", routes);
