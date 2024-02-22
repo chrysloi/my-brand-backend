@@ -4,9 +4,9 @@
   "description": "The backend that's created to be used on the personal-portfolio",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node dist/index && yarn rundoc",
+    "start": "npm run build && node dist/index.js",
     "build": "rm -rf dist && tsc",
-    "dev": "nodemon --exec ts-node src/index.ts  && yarn rundoc",
+    "dev": "nodemon src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lintdoc": "npx @redocly/cli lint src/openapi.yaml",
     "rundoc": "npx @redocly/cli preview-docs src/openapi.yaml"
