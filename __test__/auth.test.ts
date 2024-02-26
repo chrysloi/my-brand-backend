@@ -1,6 +1,8 @@
-import { user } from "../src/models/userModel";
-import app from "../src/index";
 import request from "supertest";
+import app from "../src/app";
+import envValidate from "../src/util/envValidate";
+import mongoose from "mongoose";
+import { user } from "../src/models/userModel";
 
 const newUser = {
   name: "Eloi Chrysanthe",
@@ -9,8 +11,9 @@ const newUser = {
   role: "admin",
 };
 
-beforeAll(async () => {
+afterAll(async () => {
   await user.deleteMany({});
+  await mongoose.disconnect();
 });
 
 describe("Authentication", () => {
@@ -51,6 +54,8 @@ describe("Authentication", () => {
       });
 
       expect(res.status).toBe(401);
+      expect(res.body).toHaveProperty("error");
+      expect(res.body.error).toBe("User doesn't exists");
     });
   });
 });

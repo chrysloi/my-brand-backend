@@ -66,7 +66,7 @@ class Middleware {
 
     if (!projectExists) {
       return JsonResponse(res, {
-        status: BAD_REQUEST,
+        status: NOT_FOUND,
         message: "Project Doesn't exists or you're not the owner",
       });
     }

@@ -13,9 +13,9 @@ route.post(
   asyncHandler(articleController.createArticle)
 );
 
-route.post("/one/:id", asyncHandler(articleController.getOneArticle));
+route.get("/one/:id", asyncHandler(articleController.getOneArticle));
 
-route.post("/all", asyncHandler(articleController.getAllArticles));
+route.get("/all", asyncHandler(articleController.getAllArticles));
 
 route.get(
   "/user/all",

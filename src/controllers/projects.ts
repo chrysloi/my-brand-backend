@@ -84,7 +84,7 @@ class Controller {
 
     if (is_published) {
       return JsonResponse(res, {
-        status: OK,
+        status: BAD_REQUEST,
         message: "Project is already published",
       });
     }
@@ -101,9 +101,10 @@ class Controller {
     const { _id: id, is_published } = req.project;
 
     if (!is_published) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: "Project is already unpublished" });
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        message: "Project is already unpublished",
+      });
     }
 
     await project.findByIdAndDelete(id, { is_published: false });
