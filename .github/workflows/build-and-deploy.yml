@@ -15,5 +15,5 @@ jobs:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
-      - script: |
-          cd my-brand-backend && git reset --hard && git pull && yarn && yarn build && pm2 reload 'My Brand'
+          script: |
+            cd my-brand-backend && git reset --hard && git pull && yarn && yarn build && pm2 reload 'My Brand'
