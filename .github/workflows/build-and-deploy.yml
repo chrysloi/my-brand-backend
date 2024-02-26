@@ -3,7 +3,7 @@ name: My Brand Deployment
 on:
   push:
     branches:
-      - ch-auto-deployment
+      - develop
 
 jobs:
   deploy:
