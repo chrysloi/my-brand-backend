@@ -15,7 +15,7 @@ app.get("/", (_, res: Response) => {
 });
 
 app.get("/api-docs", (_, res: Response) => {
-  res.sendFile(path.join(__dirname, "docs", "docs.html"));
+  res.sendFile(path.join(__dirname, "docs.html"));
 });
 
 app.use("/api", routes);
