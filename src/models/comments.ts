@@ -1,6 +1,6 @@
 import { InferSchemaType, Schema, model } from "mongoose";
 
-const userSchema = new Schema(
+const CommentSchema = new Schema(
   {
     comment: {
       type: String,
@@ -8,6 +8,7 @@ const userSchema = new Schema(
     },
     article: {
       type: Schema.Types.ObjectId,
+      ref: "Article",
       required: true,
     },
     user: {
@@ -15,7 +16,7 @@ const userSchema = new Schema(
       ref: "User",
       required: false,
     },
-    is_deleted: {
+    is_hide: {
       type: Boolean,
       required: true,
       default: false,
@@ -29,6 +30,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-type User = InferSchemaType<typeof userSchema>;
+type Comment = InferSchemaType<typeof CommentSchema>;
 
-export const user = model<User>("User", userSchema);
+export const CommentModel = model<Comment>("Comment", CommentSchema);
