@@ -1,0 +1,19 @@
+name: My Brand Deployment
+
+on:
+  push:
+    branches:
+      - ch-auto-deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          key: ${{secrets.KEY}}
+      - script: |
+          cd my-brand-backend && git reset --hard && git pull && yarn && yarn build && pm2 reload 'My Brand'
