@@ -5,8 +5,9 @@ import { CREATED, OK, NOT_FOUND, BAD_REQUEST, FORBIDDEN } from "http-status";
 import { AuthRequest } from "../types";
 
 class Controller {
-  async comment(req: Request, res: Response) {
+  async comment(req: AuthRequest, res: Response) {
     const { articleId } = req.params;
+    const { userId } = req.user;
     const articleExists = await article.findById(articleId);
 
     if (!articleExists) {
@@ -24,24 +25,32 @@ class Controller {
     await CommentModel.create({
       article: articleId,
       comment: req.body.comment,
+      user: userId,
     });
 
     return res.status(CREATED).json({ message: "Commented successfully" });
   }
 
-  async updateComment(req: Request, res: Response) {
+  async updateComment(req: AuthRequest, res: Response) {
     const { commentId } = req.params;
-    const commentExists = await CommentModel.findById(commentId);
+    const { userId } = req.user;
+    const commentExists = await CommentModel.findOne({
+      _id: commentId,
+      user: userId,
+    });
 
     if (!commentExists) {
       return res
         .status(BAD_REQUEST)
-        .json({ message: "Article doesn't exists" });
+        .json({ message: "Comment doesn't belongs to you!" });
     }
 
-    await CommentModel.findByIdAndUpdate(commentId, {
-      comment: req.body.comment,
-    });
+    await CommentModel.findOneAndUpdate(
+      { _id: commentId, user: userId },
+      {
+        comment: req.body.comment,
+      }
+    );
 
     return res.status(CREATED).json({ message: "Commented successfully" });
   }
@@ -86,20 +95,20 @@ class Controller {
     return res.status(OK).json({ message: "Commented deleted successfully" });
   }
 
-  async deleteComment(req: Request, res: Response) {
-    const { commentId } = req.params;
-    const commentExists = await CommentModel.findById(commentId);
+  // async deleteComment(req: Request, res: Response) {
+  //   const { commentId } = req.params;
+  //   const commentExists = await CommentModel.findById(commentId);
 
-    if (!commentExists) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: "Comment doesn't exists" });
-    }
+  //   if (!commentExists) {
+  //     return res
+  //       .status(BAD_REQUEST)
+  //       .json({ message: "Comment doesn't exists" });
+  //   }
 
-    await CommentModel.findByIdAndDelete(commentId);
+  //   await CommentModel.findByIdAndDelete(commentId);
 
-    return res.status(OK).json({ message: "Comment deleted successfully" });
-  }
+  //   return res.status(OK).json({ message: "Comment deleted successfully" });
+  // }
 }
 
 export const commentController = new Controller();
