@@ -28,7 +28,7 @@ jobs:
       - name: run tests
         env:
           PORT: 2010
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_URL: ${{secrets.MONGODB_URL}}
           MONGODB_TEST_URL: ${{ secrets.MONGODB_TEST_URL }}
           JWT_SECRET: 123456
         run: npm run test
