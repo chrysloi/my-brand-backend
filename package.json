@@ -7,7 +7,7 @@
     "start": "yarn build && node dist/index.js",
     "build": "rm -rf dist && tsc && yarn build:docs",
     "dev": "nodemon src/index.ts",
-    "test": "jest",
+    "test": "jest -r text -r json-summary",
     "lint:doc": "npx @redocly/cli lint src/openapi.yaml",
     "run:doc": "npx @redocly/cli preview-docs src/openapi.yaml",
     "build:docs": "npx @redocly/cli build-docs src/openapi.yaml -o=./dist/docs.html --title='My Brand | APIS'"

@@ -32,3 +32,5 @@ jobs:
           MONGODB_TEST_URL: ${{secrets.MONGODB_TEST_URL}}
           JWT_SECRET: 123456
         run: npm run test
+      - name: Update Coverage Badge
+        uses: we-cli/coverage-badge-action@main
