@@ -7,17 +7,7 @@ const config: Config = {
   testTimeout: 30000,
   collectCoverage: true,
   collectCoverageFrom: ["./src/**"],
-  reporters: [
-    "default",
-    [
-      "jest-junit",
-      {
-        suiteName: "jest tests",
-        outputName: "junit.xml",
-        // outputDirectory: ".",
-      },
-    ],
-  ],
+  coverageReporters: ["json-summary", "text"],
   coveragePathIgnorePatterns: [
     "./src/index.ts",
     "./src/middleware/asyncHandler.ts",

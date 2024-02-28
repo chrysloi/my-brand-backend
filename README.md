@@ -1,1 +1,2 @@
-+ [![cov](https://we-cli.github.io/jayin/badges/coverage.svg)](https://github.com/we-cli/jayin/actions)
++ [![cov](https://chrysloi.github.io/my-brand-backend/badges/coverage.svg)](https://github.com/chrysloi/my-brand-backend/actions)
++ [![build-test](https://github.com/chrysloi/my-brand-backend/actions/workflows/default.yml/badge.svg)](https://github.com/chrysloi/my-brand-backend/actions/workflows/default.yml)
