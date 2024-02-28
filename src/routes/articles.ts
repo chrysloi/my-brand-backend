@@ -33,6 +33,7 @@ route.patch(
 route.patch(
   "/one/:id/publish",
   asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(ArticleMiddleware.articleExists),
   asyncHandler(ArticleMiddleware.emptyBody),
   asyncHandler(articleController.publishArticle)
 );
@@ -40,6 +41,7 @@ route.patch(
 route.patch(
   "/one/:id/unpublish",
   asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(ArticleMiddleware.articleExists),
   asyncHandler(ArticleMiddleware.emptyBody),
   asyncHandler(articleController.unPublishArticle)
 );
@@ -47,8 +49,9 @@ route.patch(
 route.delete(
   "/one/:id/delete",
   asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(ArticleMiddleware.articleExists),
   asyncHandler(ArticleMiddleware.emptyBody),
-  asyncHandler(articleController.publishArticle)
+  asyncHandler(articleController.deleteArticle)
 );
 
 export default route;

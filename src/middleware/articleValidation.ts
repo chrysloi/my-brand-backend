@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { BAD_REQUEST } from "http-status";
+import { BAD_REQUEST, NOT_FOUND } from "http-status";
 import Joi from "joi";
 import { AuthRequest } from "../types";
 import { JsonResponse } from "../util/jsonResponse";
-
-// export const articleEmptyBodySchema = Joi.object({});
+import { article } from "../models/articleModel";
 
 class Middeware {
   async createArticle(req: AuthRequest, res: Response, next: NextFunction) {
@@ -27,12 +26,23 @@ class Middeware {
   }
 
   async updateArticle(req: AuthRequest, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { userId } = req.user;
     const updateArticleSchema = Joi.object({
       title: Joi.string().min(5).optional(),
       summary: Joi.string().min(15).optional(),
       detailed: Joi.string().min(15).optional(),
       coverImage: Joi.string().min(5).optional(),
     });
+
+    const articleExist = await article.findOne({ author: userId, _id: id });
+
+    if (!articleExist) {
+      return JsonResponse(res, {
+        status: NOT_FOUND,
+        message: "Article Doesn't exists or you're not the owner",
+      });
+    }
 
     const { value, error } = updateArticleSchema.validate(req.body);
     if (error) {
@@ -57,6 +67,20 @@ class Middeware {
       });
     }
 
+    next();
+  }
+
+  async articleExists(req: AuthRequest, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { userId } = req.user;
+    const articleExist = await article.findById(id);
+
+    if (!articleExist) {
+      return JsonResponse(res, {
+        status: NOT_FOUND,
+        error: "Article Doesn't exists or you're not the owner",
+      });
+    }
     next();
   }
 }

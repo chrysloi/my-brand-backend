@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { project } from "../models/projectModel";
-import { CREATED, OK, NOT_FOUND, BAD_REQUEST } from "http-status";
+import { CREATED, OK, NOT_FOUND, BAD_REQUEST, NO_CONTENT } from "http-status";
 import { AuthRequest, ProjectRequest } from "../types";
 import { JsonResponse } from "../util/jsonResponse";
 
@@ -115,22 +115,19 @@ class Controller {
     });
   }
 
-  async deleteProject(req: ProjectRequest, res: Response) {
-    const { _id: id, is_published } = req.project;
+  // async deleteProject(req: ProjectRequest, res: Response) {
+  //   const { _id: id, is_published } = req.project;
 
-    if (is_published) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: "You have to first unpublish the project" });
-    }
+  //   if (is_published) {
+  //     return res
+  //       .status(BAD_REQUEST)
+  //       .json({ message: "You have to first unpublish the project" });
+  //   }
 
-    await project.findByIdAndDelete(id);
+  //   await project.findByIdAndDelete(id);
 
-    return JsonResponse(res, {
-      status: OK,
-      message: "Project Deleted successfully",
-    });
-  }
+  //   return JsonResponse(res, { status: NO_CONTENT });
+  // }
 }
 
 export const projectController = new Controller();

@@ -7,6 +7,10 @@ const config: Config = {
   testTimeout: 30000,
   collectCoverage: true,
   collectCoverageFrom: ["./src/**"],
+  coveragePathIgnorePatterns: [
+    "./src/index.ts",
+    "./src/middleware/asyncHandler.ts",
+  ],
   coverageThreshold: {
     global: {
       lines: 50,

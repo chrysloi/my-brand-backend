@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { article } from "../models/articleModel";
-import { CREATED, OK, NOT_FOUND } from "http-status";
+import { CREATED, OK, NOT_FOUND, NO_CONTENT } from "http-status";
 import { JsonResponse } from "../util/jsonResponse";
 
 interface AuthRequest extends Request {
@@ -115,10 +115,7 @@ class Controller {
       is_published: false,
     });
 
-    return JsonResponse(res, {
-      status: OK,
-      message: "Article Delete successfully",
-    });
+    return JsonResponse(res, { status: NO_CONTENT });
   }
 }
 
