@@ -1,4 +1,4 @@
-name: buil-test
+name: build-test
 
 on: push
 
@@ -25,4 +25,10 @@ jobs:
         with:
           node-version: "20.x"
       - run: npm install
-      - run: npm run test
+      - name: run tests
+        env:
+          PORT: 2010
+          MONGODB_URL: ${{secrets.MONGODB_URL}}
+          MONGODB_TEST_URL: ${{secrets.MONGODB_TEST_URL}}
+          JWT_SECRET: 123456
+        run: npm run test
