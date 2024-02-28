@@ -14,7 +14,7 @@ const config: Config = {
       {
         suiteName: "jest tests",
         outputName: "junit.xml",
-        outputDirectory: ".",
+        // outputDirectory: ".",
       },
     ],
   ],
