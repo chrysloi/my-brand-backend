@@ -34,8 +34,6 @@ jobs:
         run: npm run test
       - run: npm i coverage-badges-cli -g
       - run: coverage-badges --output coverage/badges.svg
-      - name: Deploy Coverage Badge
-        uses: ./
-        with:
-          gist-id: ${{ secrets.GIST_ID }}
-          token: ${{ secrets.GIST_TOKEN }}
+      - name: Update Coverage Badge
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: we-cli/coverage-badge-action@main
