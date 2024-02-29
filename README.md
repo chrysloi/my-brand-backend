@@ -1,2 +1,1 @@
-[![cov](https://we-cli.github.io/jayin/badges/coverage.svg)](https://github.com/chrysloi/my-brand-backend/actions)
-+ [![build-test](https://github.com/chrysloi/my-brand-backend/actions/workflows/default.yml/badge.svg)](https://github.com/chrysloi/my-brand-backend/actions/workflows/default.yml)
+![Coverage](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgist.githubusercontent.com%2Fchrysloi%2F4e20add6eb7997212bddfc9ad204ca42%2Fraw%2FcoverageBadge.json&query=%24.total.lines.pct&suffix=%25&label=Coverage) [![build-test](https://github.com/chrysloi/my-brand-backend/actions/workflows/default.yml/badge.svg)](https://github.com/chrysloi/my-brand-backend/actions/workflows/default.yml)

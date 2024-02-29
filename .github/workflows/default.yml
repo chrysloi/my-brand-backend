@@ -32,8 +32,13 @@ jobs:
           MONGODB_TEST_URL: ${{ secrets.MONGODB_TEST_URL }}
           JWT_SECRET: 123456
         run: npm run test
-      - run: npm i coverage-badges-cli -g
-      - run: coverage-badges --output coverage/badges.svg
-      - name: Update Coverage Badge
-        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
-        uses: we-cli/coverage-badge-action@main
+      - name: Update Gist
+        run: |
+          gist_id=${{ secrets.GIST_ID }}
+          curl -X PATCH -d '{"files": {"coverageBadge.json": {"content": "$(cat ./coverage/coverage-summary.json)"}}}' \
+            -H "Authorization: token ${{ secrets.GIST_TOKEN }}" \
+            https://api.github.com/gists/$gist_id
+          echo "Gist updated with ID: $gist_id"
+      
+      - name: Cleanup
+        run: rm temp_file.txt
