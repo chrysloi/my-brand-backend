@@ -30,7 +30,7 @@ class Controller {
     if (userExisted)
       return JsonResponse(res, {
         status: BAD_REQUEST,
-        message: "email already taken",
+        error: "email already taken",
       });
 
     await user.create({
@@ -54,14 +54,14 @@ class Controller {
     if (!userExists)
       return JsonResponse(res, {
         status: UNAUTHORIZED,
-        message: "User doesn't exists",
+        error: "User doesn't exists",
       });
 
     const valid_pass = await bcrypt.compare(password, userExists.password);
     if (!valid_pass)
       return JsonResponse(res, {
         status: UNAUTHORIZED,
-        message: "Password doesn't match",
+        error: "Password doesn't match",
       });
 
     const token = jwt.sign(
@@ -75,7 +75,6 @@ class Controller {
     return JsonResponse(res, {
       status: OK,
       message: "Successfully logged in",
-      user: userExists,
       token,
     });
   }

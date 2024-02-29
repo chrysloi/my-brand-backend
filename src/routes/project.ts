@@ -37,6 +37,7 @@ route.patch(
   "/one/:id/publish",
   asyncHandler(Authorization.isAuthenticated),
   asyncHandler(Authorization.isAdmin),
+  asyncHandler(ProjectMiddleware.projectExists),
   asyncHandler(ProjectMiddleware.emptyBody),
   asyncHandler(projectController.publishProject)
 );
@@ -45,16 +46,18 @@ route.patch(
   "/one/:id/unpublish",
   asyncHandler(Authorization.isAuthenticated),
   asyncHandler(Authorization.isAdmin),
+  asyncHandler(ProjectMiddleware.projectExists),
   asyncHandler(ProjectMiddleware.emptyBody),
   asyncHandler(projectController.unPublishProject)
 );
 
-route.delete(
-  "/one/:id/delete",
-  asyncHandler(Authorization.isAuthenticated),
-  asyncHandler(Authorization.isAdmin),
-  asyncHandler(ProjectMiddleware.emptyBody),
-  asyncHandler(projectController.deleteProject)
-);
+// route.delete(
+//   "/one/:id/delete",
+//   asyncHandler(Authorization.isAuthenticated),
+//   asyncHandler(Authorization.isAdmin),
+//   asyncHandler(ProjectMiddleware.projectExists),
+//   asyncHandler(ProjectMiddleware.emptyBody),
+//   asyncHandler(projectController.deleteProject)
+// );
 
 export default route;

@@ -33,8 +33,8 @@ class Middleware {
 
     if (!projectExists) {
       return JsonResponse(res, {
-        status: BAD_REQUEST,
-        message: "Project Doesn't exists or you're not the owner",
+        status: NOT_FOUND,
+        error: "Project Doesn't exists or you're not the owner",
       });
     }
 
@@ -62,15 +62,6 @@ class Middleware {
     const { userId } = req.user;
     const emptyBodySchema = Joi.object({});
 
-    const projectExists = await project.findOne({ owner: userId, _id: id });
-
-    if (!projectExists) {
-      return JsonResponse(res, {
-        status: BAD_REQUEST,
-        message: "Project Doesn't exists or you're not the owner",
-      });
-    }
-
     const { error } = emptyBodySchema.validate(req.body);
     if (error) {
       return JsonResponse(res, {
@@ -79,7 +70,6 @@ class Middleware {
       });
     }
 
-    req.project = projectExists;
     next();
   }
 
@@ -90,7 +80,7 @@ class Middleware {
 
     if (!projectExists) {
       return JsonResponse(res, {
-        status: BAD_REQUEST,
+        status: NOT_FOUND,
         message: "Project Doesn't exists or you're not the owner",
       });
     }

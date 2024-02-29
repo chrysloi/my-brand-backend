@@ -6,8 +6,8 @@ import { JsonResponse } from "../util/jsonResponse";
 class Middeware {
   async loginValidation(req: Request, res: Response, next: NextFunction) {
     const loginSchema = Joi.object({
-      email: Joi.string().email({ minDomainSegments: 2 }),
-      password: Joi.string().min(6),
+      email: Joi.string().email({ minDomainSegments: 2 }).required(),
+      password: Joi.string().min(6).required(),
     });
     const { value, error } = loginSchema.validate(req.body);
     if (error) {
@@ -22,9 +22,9 @@ class Middeware {
 
   async registerValidation(req: Request, res: Response, next: NextFunction) {
     const registerSchema = Joi.object({
-      name: Joi.string().min(3),
-      email: Joi.string().email({ minDomainSegments: 2 }),
-      password: Joi.string().min(6),
+      name: Joi.string().min(3).required(),
+      email: Joi.string().email({ minDomainSegments: 2 }).required(),
+      password: Joi.string().min(6).required(),
     });
 
     const { value, error } = registerSchema.validate(req.body);

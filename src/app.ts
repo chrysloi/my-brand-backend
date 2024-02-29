@@ -3,15 +3,20 @@ import express, { Express, Request, Response } from "express";
 import morgan from "morgan";
 import routes from "./routes";
 import path from "path";
+import { JsonResponse } from "./util/jsonResponse";
+import { NOT_FOUND, OK } from "http-status";
+import mongoose from "mongoose";
+import env from "./util/envValidate";
 
 const app: Express = express();
+const { isTest, MONGODB_TEST_URL, MONGODB_URL } = env;
 
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (_, res: Response) => {
-  res.status(200).json({ message: "Welcome to my server" });
+  return JsonResponse(res, { status: OK, message: "Welcome to my server" });
 });
 
 app.get("/api-docs", (_, res: Response) => {
@@ -21,7 +26,7 @@ app.get("/api-docs", (_, res: Response) => {
 app.use("/api", routes);
 
 app.use("/**", (req: Request, res: Response) => {
-  res.status(404).json({ message: "Route not found" });
+  return JsonResponse(res, { status: NOT_FOUND, error: "Route not found" });
 });
 
 app.use((error: unknown, req: Request, res: Response) => {
@@ -29,5 +34,16 @@ app.use((error: unknown, req: Request, res: Response) => {
   if (error instanceof Error) errorMessage = error.message;
   return res.status(500).json({ errorMessage });
 });
+
+(async () => {
+  try {
+    mongoose.set("strictQuery", false);
+    await mongoose.connect(isTest ? MONGODB_TEST_URL : MONGODB_URL).then(() => {
+      console.log("Ready To work with MongoDB");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+})();
 
 export default app;

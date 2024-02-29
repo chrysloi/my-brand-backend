@@ -3,6 +3,7 @@ import { CommentModel } from "../models/comments";
 import { article } from "../models/articleModel";
 import { CREATED, OK, NOT_FOUND, BAD_REQUEST, FORBIDDEN } from "http-status";
 import { AuthRequest } from "../types";
+import { JsonResponse } from "../util/jsonResponse";
 
 class Controller {
   async comment(req: AuthRequest, res: Response) {
@@ -17,9 +18,10 @@ class Controller {
     }
 
     if (!articleExists.is_published) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: "Article not receiving comments" });
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        message: "Article not receiving comments",
+      });
     }
 
     await CommentModel.create({
@@ -28,7 +30,10 @@ class Controller {
       user: userId,
     });
 
-    return res.status(CREATED).json({ message: "Commented successfully" });
+    return JsonResponse(res, {
+      status: CREATED,
+      message: "Commented successfully",
+    });
   }
 
   async updateComment(req: AuthRequest, res: Response) {
@@ -52,7 +57,7 @@ class Controller {
       }
     );
 
-    return res.status(CREATED).json({ message: "Commented successfully" });
+    return res.status(OK).json({ message: "Updated Comment successfully" });
   }
 
   async getArticleComments(req: Request, res: Response) {

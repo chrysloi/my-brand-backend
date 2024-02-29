@@ -6,7 +6,6 @@ export default (cb: any) => async (req: any, res: any, next: NextFunction) => {
   try {
     await cb(req, res, next);
   } catch (error: Error | any) {
-    console.log(error);
     return JsonResponse(res, {
       status: INTERNAL_SERVER_ERROR,
       error: true,
