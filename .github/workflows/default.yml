@@ -35,13 +35,10 @@ jobs:
       - name: Update Gist
         run: |
           gist_id=${{ secrets.GIST_ID }}
-          curl -L \
-            -X PATCH \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GIST_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/gists/$gist_id \
-            -d '{"files": {"coverageBadge.json": {"content": 
-              "$(cat ./coverage/coverage-summary.json)"}}}' \
+          gist_token=${{ secrets.GIST_TOKEN }}
+          git clone https://$gist_token@gist.github.com/$gist_id.git
+          cat coverage/coverage-summary.json > $gist_id/coverageBadge.json
+          cd $gist_id
+          git commit -am "updates" && git push
 
-          echo "Gist updated with ID: $gist_id"
+          echo "Gist with ID '$gist_id' is updated"
