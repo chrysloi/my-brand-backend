@@ -36,6 +36,8 @@ jobs:
         run: |
           gist_id=${{ secrets.GIST_ID }}
           gist_token=${{ secrets.GIST_TOKEN }}
+          git config --global user.name "Chrysloi"
+          git config --global user.email "eloi.chrysanthe@gmail.com"
           git clone https://$gist_token@gist.github.com/$gist_id.git
           cat coverage/coverage-summary.json > $gist_id/coverageBadge.json
           cd $gist_id
