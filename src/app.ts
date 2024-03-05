@@ -6,12 +6,14 @@ import path from "path";
 import { JsonResponse } from "./util/jsonResponse";
 import { NOT_FOUND, OK } from "http-status";
 import mongoose from "mongoose";
+import cors from "cors";
 import env from "./util/envValidate";
 
 const app: Express = express();
 const { isTest, MONGODB_TEST_URL, MONGODB_URL } = env;
 
 app.use(morgan("dev"));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
