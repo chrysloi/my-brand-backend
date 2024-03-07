@@ -38,8 +38,9 @@ class Controller {
     }
 
     return JsonResponse(res, {
-      status: NOT_FOUND,
-      message: "There're no articles currently",
+      status: OK,
+      articles,
+      message: "Successfully fetched articles",
     });
   }
 
