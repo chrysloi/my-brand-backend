@@ -142,13 +142,6 @@ describe("Blog testing", () => {
     expect(res.body.message).toEqual("Articles fetched successfully");
   });
 
-  it("should fail to get loggedin user's articles if they're empty", async () => {
-    const res = await request(app)
-      .get(`/api/blog/user/all`)
-      .set("Authorization", `Bearer ${token}`);
-    expect(res.status).toBe(404);
-  });
-
   it("should update an article", async () => {
     const res = await request(app)
       .patch(`/api/blog/one/${blogId}/update`)
@@ -174,5 +167,13 @@ describe("Blog testing", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");
+  });
+
+  it("should fail to get loggedin user's articles if they're empty", async () => {
+    await article.deleteMany({});
+    const res = await request(app)
+      .get(`/api/blog/user/all`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(404);
   });
 });

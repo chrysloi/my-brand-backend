@@ -1,28 +1,26 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, Request } from "express";
 import { ProjectRequest } from "../types";
 import { project } from "../models/projectModel";
 import { BAD_REQUEST, NOT_FOUND } from "http-status";
 import Joi from "joi";
 import { JsonResponse } from "../util/jsonResponse";
 
+export const createprojectSchema = Joi.object({
+  title: Joi.string().min(5).required(),
+  summary: Joi.string().min(15).required(),
+  detailed: Joi.string().min(15).required(),
+});
 class Middleware {
-  async createProject(req: ProjectRequest, res: Response, next: NextFunction) {
-    const createprojectSchema = Joi.object({
-      title: Joi.string().min(5).required(),
-      summary: Joi.string().min(15).required(),
-      detailed: Joi.string().min(15).required(),
-      coverImage: Joi.string().min(5).optional(),
-    });
-
-    const { value, error } = createprojectSchema.validate(req.body);
+  async createProject(req: Request, res: Response, next?: NextFunction) {
+    const { value, error } = createprojectSchema.validate({ ...req.body });
     if (error) {
       return JsonResponse(res, {
         status: BAD_REQUEST,
         error: error.details.map((err) => err.message),
       });
     }
-    req.body = value;
-    next();
+    // req.body = value;
+    // next();
   }
 
   async updateProject(req: ProjectRequest, res: Response, next: NextFunction) {

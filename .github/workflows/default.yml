@@ -31,6 +31,9 @@ jobs:
           MONGODB_URL: ${{secrets.MONGODB_URL}}
           MONGODB_TEST_URL: ${{ secrets.MONGODB_TEST_URL }}
           JWT_SECRET: 123456
+          APP_URL: ${{secrets.APP_URL}}
+          SENDGRID_API: ${{secrets.SENDGRID_API}}
+          SEND_EMAIL: ${{secrets.SEND_EMAIL}}
         run: npm run test
       - name: Update Gist
         run: |

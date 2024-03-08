@@ -3,6 +3,7 @@ import asyncHandler from "../middleware/asyncHandler";
 import { projectController } from "../controllers/projects";
 import { Authorization } from "../middleware/auth";
 import { ProjectMiddleware } from "../middleware/project.minddleware";
+import { upload } from "../middleware/multer";
 
 const route = Router();
 
@@ -10,7 +11,8 @@ route.post(
   "/create",
   asyncHandler(Authorization.isAuthenticated),
   asyncHandler(Authorization.isAdmin),
-  asyncHandler(ProjectMiddleware.createProject),
+  // asyncHandler(ProjectMiddleware.createProject),
+  upload.single("projectImage"),
   asyncHandler(projectController.createProject)
 );
 

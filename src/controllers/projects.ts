@@ -1,13 +1,26 @@
 import { Request, Response } from "express";
 import { project } from "../models/projectModel";
-import { CREATED, OK, NOT_FOUND, BAD_REQUEST, NO_CONTENT } from "http-status";
+import { CREATED, OK, NOT_FOUND, BAD_REQUEST } from "http-status";
 import { AuthRequest, ProjectRequest } from "../types";
 import { JsonResponse } from "../util/jsonResponse";
+import { createprojectSchema } from "../middleware/project.minddleware";
+import env from "../util/envValidate";
 
 class Controller {
-  async createProject(req: any, res: Response) {
+  async createProject(req: AuthRequest, res: Response) {
     const { userId } = req.user;
-    const newProject = await project.create({ ...req.body, owner: userId });
+    const { value, error } = createprojectSchema.validate({ ...req.body });
+    if (error) {
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        error: error.details.map((err) => err.message),
+      });
+    }
+    const newProject = await project.create({
+      ...value,
+      owner: userId,
+      coverImage: `${env.APP_URL}/${req.file?.path}`,
+    });
 
     return JsonResponse(res, {
       status: CREATED,
