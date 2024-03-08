@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { article } from "../models/articleModel";
-import { CREATED, OK, NOT_FOUND, NO_CONTENT } from "http-status";
+import { CREATED, OK, NOT_FOUND, NO_CONTENT, BAD_REQUEST } from "http-status";
 import { JsonResponse } from "../util/jsonResponse";
+import env from "../util/envValidate";
+import { createArticleSchema } from "../middleware/articleValidation";
 
 interface AuthRequest extends Request {
   user: any;
@@ -9,7 +11,18 @@ interface AuthRequest extends Request {
 class Controller {
   async createArticle(req: AuthRequest, res: Response) {
     const { userId } = req.user;
-    const newArticle = await article.create({ ...req.body, author: userId });
+    const { value, error } = createArticleSchema.validate(req.body);
+    if (error) {
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        error: error.details.map((err) => err.message),
+      });
+    }
+    const newArticle = await article.create({
+      ...value,
+      author: userId,
+      coverImage: `${env.APP_URL}/${req.file?.path}`,
+    });
 
     return JsonResponse(res, {
       status: CREATED,

@@ -25,6 +25,7 @@ app.get("/api-docs", (_, res: Response) => {
   res.sendFile(path.join(__dirname, "docs.html"));
 });
 
+app.use("/images", express.static("images/"));
 app.use("/api", routes);
 
 app.use("/**", (req: Request, res: Response) => {

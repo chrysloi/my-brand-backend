@@ -11,6 +11,7 @@ const config: Config = {
   coveragePathIgnorePatterns: [
     "./src/index.ts",
     "./src/middleware/asyncHandler.ts",
+    "./src/middleware/multer.ts",
   ],
   coverageThreshold: {
     global: {

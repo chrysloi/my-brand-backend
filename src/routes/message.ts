@@ -26,4 +26,11 @@ route.get(
   asyncHandler(MessageController.readMessage)
 );
 
+route.post(
+  "/one/:id/reply",
+  asyncHandler(Authorization.isAuthenticated),
+  asyncHandler(Authorization.isAdmin),
+  asyncHandler(MessageController.replyMessage)
+);
+
 export default route;

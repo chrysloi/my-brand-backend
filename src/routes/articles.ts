@@ -3,13 +3,15 @@ import asyncHandler from "../middleware/asyncHandler";
 import { articleController } from "../controllers/articles";
 import { Authorization } from "../middleware/auth";
 import { ArticleMiddleware } from "../middleware/articleValidation";
+import { upload } from "../middleware/multer";
 
 const route = Router();
 
 route.post(
   "/create",
   asyncHandler(Authorization.isAuthenticated),
-  asyncHandler(ArticleMiddleware.createArticle),
+  // asyncHandler(ArticleMiddleware.createArticle),
+  upload.single("articleImage"),
   asyncHandler(articleController.createArticle)
 );
 
