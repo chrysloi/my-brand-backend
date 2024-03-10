@@ -12,9 +12,10 @@ class Controller {
     const articleExists = await article.findById(articleId);
 
     if (!articleExists) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: "Article doesn't exists" });
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        message: "Article doesn't exists",
+      });
     }
 
     if (!articleExists.is_published) {
@@ -45,9 +46,10 @@ class Controller {
     });
 
     if (!commentExists) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: "Comment doesn't belongs to you!" });
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        message: "Comment doesn't belongs to you!",
+      });
     }
 
     await CommentModel.findOneAndUpdate(
@@ -57,7 +59,10 @@ class Controller {
       }
     );
 
-    return res.status(OK).json({ message: "Updated Comment successfully" });
+    return JsonResponse(res, {
+      status: OK,
+      message: "Updated Comment successfully",
+    });
   }
 
   async getArticleComments(req: Request, res: Response) {
@@ -65,9 +70,10 @@ class Controller {
     const articleExists = await article.findById(articleId);
 
     if (!articleExists) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: "Article doesn't exists" });
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        message: "Article doesn't exists",
+      });
     }
 
     const comments = await CommentModel.find({
@@ -75,9 +81,11 @@ class Controller {
       is_hide: false,
     });
 
-    return res
-      .status(OK)
-      .json({ message: "Comments fetched successfully", comments });
+    return JsonResponse(res, {
+      status: OK,
+      message: "Comments fetched successfully",
+      comments,
+    });
   }
 
   async deleteArticleComments(req: AuthRequest, res: Response) {
@@ -86,18 +94,25 @@ class Controller {
     const articleExists = await article.findById(articleId);
 
     if (!articleExists) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: "Article doesn't exists" });
+      return JsonResponse(res, {
+        status: BAD_REQUEST,
+        message: "Article doesn't exists",
+      });
     }
 
     if (articleExists.author.toString() !== userId) {
-      return res.status(FORBIDDEN).json({ message: "Permission denied" });
+      return JsonResponse(res, {
+        status: FORBIDDEN,
+        message: "Permission denied",
+      });
     }
 
     await CommentModel.findByIdAndUpdate(commentId, { is_hide: true });
 
-    return res.status(OK).json({ message: "Commented deleted successfully" });
+    return JsonResponse(res, {
+      status: OK,
+      message: "Comment deleted successfully",
+    });
   }
 
   // async deleteComment(req: Request, res: Response) {
