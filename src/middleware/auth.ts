@@ -3,9 +3,10 @@ import { FORBIDDEN, UNAUTHORIZED } from "http-status";
 import env from "../util/envValidate";
 import jwt from "jsonwebtoken";
 import { JsonResponse } from "../util/jsonResponse";
+import { AuthRequest } from "../types";
 
 class Authorise {
-  async isAuthenticated(req: any, res: Response, next: NextFunction) {
+  async isAuthenticated(req: AuthRequest, res: Response, next: NextFunction) {
     const authHeader = req.header("Authorization") || req.header("token");
 
     if (!authHeader) {

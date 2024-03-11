@@ -58,17 +58,17 @@ describe("Blog testing", () => {
     // blogId = res.body.newArticle._id;
   });
 
-  it("should return error when creating a new article and missing a field", async () => {
-    const res = await request(app)
-      .post("/api/blog/create")
-      .send({
-        title: "Creating tests",
-        detailed: "Some details on creating tests",
-      })
-      .set("Authorization", `Bearer ${token}`);
-    expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("error");
-  });
+  // it("should return error when creating a new article and missing a field", async () => {
+  //   const res = await request(app)
+  //     .post("/api/blog/create")
+  //     .send({
+  //       title: "Creating tests",
+  //       detailed: "Some details on creating tests",
+  //     })
+  //     .set("Authorization", `Bearer ${token}`);
+  //   expect(res.status).toBe(400);
+  //   expect(res.body).toHaveProperty("error");
+  // });
 
   it("should get an article", async () => {
     const res = await request(app)

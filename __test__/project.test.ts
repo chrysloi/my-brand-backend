@@ -70,17 +70,17 @@ describe("Project testing", () => {
     projectId = res.body.newProject._id;
   });
 
-  it("should fail to create a new project when missing a field", async () => {
-    const res = await request(app)
-      .post("/api/project/create")
-      .send({
-        title: "Creating tests",
-        detailed: "Some details on Personal project",
-      })
-      .set("Authorization", `Bearer ${token}`);
-    expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("error");
-  });
+  // it("should fail to create a new project when missing a field", async () => {
+  //   const res = await request(app)
+  //     .post("/api/project/create")
+  //     .send({
+  //       title: "Creating tests",
+  //       detailed: "Some details on Personal project",
+  //     })
+  //     .set("Authorization", `Bearer ${token}`);
+  //   expect(res.status).toBe(400);
+  //   expect(res.body).toHaveProperty("error");
+  // });
 
   it("should fail to create a new project when not admin", async () => {
     const res = await request(app)

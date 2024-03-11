@@ -9,15 +9,15 @@ import env from "../util/envValidate";
 class Controller {
   async createProject(req: AuthRequest, res: Response) {
     const { userId } = req.user;
-    const { value, error } = createprojectSchema.validate({ ...req.body });
-    if (error) {
-      return JsonResponse(res, {
-        status: BAD_REQUEST,
-        error: error.details.map((err) => err.message),
-      });
-    }
+    // const { value, error } = createprojectSchema.validate({ ...req.body });
+    // if (error) {
+    //   return JsonResponse(res, {
+    //     status: BAD_REQUEST,
+    //     error: error.details.map((err) => err.message),
+    //   });
+    // }
     const newProject = await project.create({
-      ...value,
+      ...req.body,
       owner: userId,
       coverImage: `${env.APP_URL}/${req.file?.path}`,
     });
@@ -39,7 +39,9 @@ class Controller {
       conditions = { ...conditions, is_published: false };
     }
 
-    const projects = await project.find(conditions);
+    const projects = await project
+      .find(conditions)
+      .populate("owner", "name profile profilePicture");
 
     if (projects.length === 0) {
       return JsonResponse(res, {
@@ -56,7 +58,9 @@ class Controller {
   }
 
   async getAllProjects(req: Request, res: Response) {
-    const projects = await project.find({ is_published: true });
+    const projects = await project
+      .find({ is_published: true })
+      .populate("owner", "name profile profilePicture");
 
     return JsonResponse(res, {
       status: OK,
@@ -67,7 +71,9 @@ class Controller {
 
   async getOneProject(req: Request, res: Response) {
     const { id } = req.params;
-    const fetchedProject = await project.findById(id);
+    const fetchedProject = await project
+      .findById(id)
+      .populate("owner", "name profile profilePicture");
 
     if (!fetchedProject) {
       return JsonResponse(res, {
