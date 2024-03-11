@@ -12,6 +12,8 @@ const config: Config = {
     "./src/index.ts",
     "./src/middleware/asyncHandler.ts",
     "./src/middleware/multer.ts",
+    "./src/middleware/articleValidation.ts",
+    "./src/middleware/project.minddleware.ts",
   ],
   coverageThreshold: {
     global: {
