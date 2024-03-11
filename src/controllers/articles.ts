@@ -11,15 +11,20 @@ interface AuthRequest extends Request {
 class Controller {
   async createArticle(req: AuthRequest, res: Response) {
     const { userId } = req.user;
-    const { value, error } = createArticleSchema.validate(req.body);
-    if (error) {
-      return JsonResponse(res, {
-        status: BAD_REQUEST,
-        error: error.details.map((err) => err.message),
-      });
-    }
+    // console.log(req.body);
+    // console.log(typeof req.body);
+    // const { value, error } = createArticleSchema.validate({
+    //   ...req.body,
+    // });
+    // if (error) {
+    //   return JsonResponse(res, {
+    //     status: BAD_REQUEST,
+    //     error: error.details.map((err) => err.message),
+    //   });
+    // }
+    // console.log(value);
     const newArticle = await article.create({
-      ...value,
+      ...req.body,
       author: userId,
       coverImage: `${env.APP_URL}/${req.file?.path}`,
     });
@@ -41,7 +46,9 @@ class Controller {
       conditions = { ...conditions, is_published: false };
     }
 
-    const articles = await article.find(conditions);
+    const articles = await article
+      .find(conditions)
+      .populate("author", "name profilePicture");
 
     if (articles.length === 0) {
       return JsonResponse(res, {
@@ -58,7 +65,9 @@ class Controller {
   }
 
   async getAllArticles(req: AuthRequest, res: Response) {
-    const articles = await article.find({ is_published: true });
+    const articles = await article
+      .find({ is_published: true })
+      .populate("author", "name profile profilePicture");
 
     return JsonResponse(res, {
       status: OK,
@@ -69,7 +78,9 @@ class Controller {
 
   async getOneArticle(req: Request, res: Response) {
     const { id } = req.params;
-    const fetchedArticle = await article.findById(id);
+    const fetchedArticle = await article
+      .findById(id)
+      .populate("author", "name profile profilePicture");
 
     return JsonResponse(res, {
       status: OK,
